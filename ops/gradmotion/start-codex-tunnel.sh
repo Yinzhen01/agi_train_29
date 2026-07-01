@@ -40,6 +40,7 @@ Options:
   --ecs-host HOST          ECS public host/IP. Default comes from the project script.
   --ecs-user USER          ECS SSH user. Default: root.
   --identity-file PATH     SSH private key used by this desktop to log in to ECS.
+                           If missing, the key is generated and its public key is printed.
   --remote-bind ADDR       Remote bind address, for example 0.0.0.0.
   --no-bootstrap           Skip environment bootstrap and only start the tunnel.
   --bootstrap-must-pass    Do not start the tunnel if bootstrap fails.
@@ -196,6 +197,48 @@ install_codex_public_key() {
   chmod 600 /root/.ssh/authorized_keys
 }
 
+ensure_ecs_identity_file() {
+  if [[ -z "${IDENTITY_FILE}" ]]; then
+    return
+  fi
+
+  IDENTITY_FILE="${IDENTITY_FILE/#\~/${HOME:-/root}}"
+  local identity_dir
+  identity_dir="$(dirname "${IDENTITY_FILE}")"
+
+  if [[ -f "${IDENTITY_FILE}" ]]; then
+    chmod 600 "${IDENTITY_FILE}" || true
+    return
+  fi
+
+  mkdir -p "${identity_dir}"
+  chmod 700 "${identity_dir}" || true
+
+  log "ECS identity file does not exist: ${IDENTITY_FILE}"
+  log "Generating a new cloud-desktop-specific SSH key"
+  ssh-keygen \
+    -t ed25519 \
+    -f "${IDENTITY_FILE}" \
+    -N "" \
+    -C "cloud-to-ecs-codex-tunnel@$(hostname)-$(date +%Y%m%d%H%M%S)" \
+    >/dev/null
+  chmod 600 "${IDENTITY_FILE}"
+
+  cat >&2 <<EOF
+[codex-tunnel] Generated ECS tunnel key:
+[codex-tunnel]   private: ${IDENTITY_FILE}
+[codex-tunnel]   public : ${IDENTITY_FILE}.pub
+[ACTION REQUIRED]
+Add this public key to ${ECS_USER}@${ECS_HOST}:/root/.ssh/authorized_keys, then run the same command again:
+
+$(cat "${IDENTITY_FILE}.pub")
+
+After the ECS authorized_keys is updated, rerun:
+  bash ops/gradmotion/start-codex-tunnel.sh --identity-file ${IDENTITY_FILE} --no-bootstrap --remote-port ${REMOTE_PORT}
+EOF
+  exit 3
+}
+
 ensure_local_sshd() {
   if command -v ss >/dev/null 2>&1 && ss -lnt | awk '$4 ~ /(^|:|\])22$/ { found=1 } END { exit found ? 0 : 1 }'; then
     log "Local SSH service is listening on port 22"
@@ -286,6 +329,7 @@ main() {
   activate_conda_env
   install_codex_public_key
   ensure_local_sshd
+  ensure_ecs_identity_file
   run_bootstrap
   start_reverse_tunnel
 }

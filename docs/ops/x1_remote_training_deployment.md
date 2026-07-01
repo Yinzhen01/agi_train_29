@@ -116,27 +116,66 @@ bash ops/gradmotion/gui-desktop-train.sh tensorboard
 
 ## 5. Codex 远程操作云桌面
 
-新 Gradmotion GUI 云桌面可以使用：
+新 Gradmotion GUI 云桌面使用 ECS 反向 SSH 隧道让 Codex 连接。当前默认 ECS 是：
 
-```bash
-bash ops/gradmotion/start-codex-tunnel.sh
+```text
+47.252.37.167
 ```
 
-如果 ECS 需要指定 SSH 私钥，从云桌面运行：
+### 5.1 新云桌面第一次复现
+
+不要把本机或 ECS 私钥复制进仓库。新云桌面第一次启动时，让它生成一把只属于这台云桌面的隧道私钥：
+
+```bash
+cd /root/limx_rl/agibot_x1_train
+git pull
+bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs --no-bootstrap
+```
+
+如果 `/root/.ssh/codex_tunnel_to_ecs` 不存在，脚本会自动生成：
+
+```text
+/root/.ssh/codex_tunnel_to_ecs
+/root/.ssh/codex_tunnel_to_ecs.pub
+```
+
+然后脚本会打印 `.pub` 公钥。把这段公钥加入 ECS：
+
+```text
+47.252.37.167:/root/.ssh/authorized_keys
+```
+
+加入后，在同一个云桌面重新运行：
+
+```bash
+bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs --no-bootstrap
+```
+
+看到下面几行并且终端保持不退出，就表示隧道已经打开：
+
+```text
+[codex-tunnel] ECS: root@47.252.37.167
+[codex-tunnel] Identity file: /root/.ssh/codex_tunnel_to_ecs
+[codex-tunnel] Remote forward: 2222:localhost:22
+```
+
+隧道建立后，Codex 可以通过 ECS 反向端口进入云桌面执行命令；用户仍然能在 Gradmotion GUI 桌面看到 Isaac Gym viewer、xclock、终端等窗口。
+
+### 5.2 已注册过钥匙的云桌面
+
+同一台云桌面后续只需要：
+
+```bash
+cd /root/limx_rl/agibot_x1_train
+git pull
+bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs --no-bootstrap
+```
+
+如果希望顺带跑完整环境检查和 GUI smoke test，去掉 `--no-bootstrap`：
 
 ```bash
 bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs
 ```
-
-它会做三件事：
-
-```text
-把 Codex 公钥加入云桌面 /root/.ssh/authorized_keys
-运行 GUI bootstrap
-通过 ECS 跳板机建立反向 SSH 隧道
-```
-
-隧道建立后，Codex 可以通过 ECS 反向端口进入云桌面执行命令；用户仍然能在 Gradmotion GUI 桌面看到 Isaac Gym viewer、xclock、终端等窗口。
 
 详细原理见：
 
