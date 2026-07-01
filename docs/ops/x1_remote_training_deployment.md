@@ -1,4 +1,4 @@
-# X1 12DOF 远端训练部署流程
+﻿# X1 12DOF 远端训练部署流程
 
 本文档说明如何把当前 `agibot_x1_train` 项目部署到远端机器或 Gradmotion GUI 云桌面，并启动 `x1_dh_stand` 训练。
 
@@ -135,9 +135,9 @@ bash ops/gradmotion/start-codex-tunnel.sh
 详细原理见：
 
 ```text
-doc/codex_gradmotion_gui_operation_principles.md
-doc/gradmotion_reverse_ssh_gui_workflow.md
-doc/gradmotion_codex_gui_minimal_repro.md
+docs/ops/codex_gradmotion_gui_operation_principles.md
+docs/ops/gradmotion_reverse_ssh_gui_workflow.md
+docs/ops/gradmotion_codex_gui_minimal_repro.md
 ```
 
 ## 6. TensorBoard
@@ -201,3 +201,4 @@ outputs/
 ```
 
 `ops/gradmotion/codex_gradmotion.pub` 是公钥，可以保留在仓库里；对应私钥必须只留在本地。
+

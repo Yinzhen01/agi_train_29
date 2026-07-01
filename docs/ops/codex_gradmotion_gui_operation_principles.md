@@ -3,13 +3,13 @@
 本文解释 Codex 之前通过 Gradmotion GUI 云桌面进行可视化训练、调试和进程管理的整体原理。最小复现步骤见：
 
 ```text
-doc/gradmotion_codex_gui_minimal_repro.md
+docs/ops/gradmotion_codex_gui_minimal_repro.md
 ```
 
 逐步命令和排错细节见：
 
 ```text
-doc/gradmotion_reverse_ssh_gui_workflow.md
+docs/ops/gradmotion_reverse_ssh_gui_workflow.md
 ```
 
 ## 目标
@@ -301,4 +301,5 @@ vim /root/.ssh/authorized_keys
 ```
 
 如果不再需要该云桌面被 Codex 操作，关闭保持反向隧道的终端即可。
+
 

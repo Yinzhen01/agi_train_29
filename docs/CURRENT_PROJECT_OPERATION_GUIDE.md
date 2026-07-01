@@ -1,4 +1,4 @@
-# 当前项目整体运行思路说明
+﻿# 当前项目整体运行思路说明
 
 生成时间：2026-06-30  
 项目路径：`F:\agibot_x1_train`  
@@ -770,12 +770,12 @@ bash ops/gradmotion/deploy_x1_remote.sh --server root@SERVER_IP --conda-env poin
 详细文档：
 
 ```text
-doc/x1_remote_training_deployment.md
-doc/gradmotion_codex_gui_minimal_repro.md
-doc/gradmotion_reverse_ssh_gui_workflow.md
-doc/codex_gradmotion_gui_operation_principles.md
-doc/gm_cli_task_submission_workflow.md
-doc/cloud_task_artifact_layout.md
+docs/ops/x1_remote_training_deployment.md
+docs/ops/gradmotion_codex_gui_minimal_repro.md
+docs/ops/gradmotion_reverse_ssh_gui_workflow.md
+docs/ops/codex_gradmotion_gui_operation_principles.md
+docs/ops/gm_cli_task_submission_workflow.md
+docs/ops/cloud_task_artifact_layout.md
 ```
 
 注意：`ops/gm-cli/payloads/*.local.json`、`ops/gm-cli/accounts.local.json`、`cloud_artifacts/` 和 `outputs/` 是本地文件，不应提交。公钥 `ops/gradmotion/codex_gradmotion.pub` 可以随仓库保留；私钥不能入库。
@@ -795,3 +795,4 @@ doc/cloud_task_artifact_layout.md
 ```
 
 它的优点是结构清晰、训练目标完整、鲁棒性考虑充分。它的局限是参考步态仍然是关节空间模板，而不是显式足端轨迹或全身运动学规划；如果后续要改善脚端轨迹质量，可以考虑引入足端 minimum-jerk + IK，但需要同步重写参考生成、奖励权重和 sim2sim 对齐逻辑。
+

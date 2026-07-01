@@ -1,17 +1,17 @@
-# gm-cli Operations
+﻿# gm-cli Operations
 
 This directory keeps gm-cli operational files out of the repository root.
 
 Detailed workflow:
 
 ```text
-../../doc/gm_cli_task_submission_workflow.md
+../../docs/ops/gm_cli_task_submission_workflow.md
 ```
 
 Cloud artifact layout:
 
 ```text
-../../doc/cloud_task_artifact_layout.md
+../../docs/ops/cloud_task_artifact_layout.md
 ```
 
 ## Payloads
@@ -67,7 +67,7 @@ checksums.sha256
 
 `cloud_artifacts/` is local-only and ignored by Git.
 
-See `../../doc/cloud_task_artifact_layout.md` for file roles, metadata conventions, and checkpoint checksum policy.
+See `../../docs/ops/cloud_task_artifact_layout.md` for file roles, metadata conventions, and checkpoint checksum policy.
 
 ## Inference Repository Sync
 
@@ -90,3 +90,4 @@ For task directories that are already present under `cloud_artifacts/tasks/`, ru
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\ops\gm-cli\sync-task-artifacts.ps1 -TaskId TASK_xxx
 ```
+

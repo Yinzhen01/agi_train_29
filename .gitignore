@@ -67,3 +67,4 @@ ops/gm-cli/accounts.local.json
 ops/gm-cli/payloads/*.local.json
 cloud_artifacts/
 outputs/
+work/

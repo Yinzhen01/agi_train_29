@@ -1,4 +1,4 @@
-# gm-cli 云训练任务提交流程
+﻿# gm-cli 云训练任务提交流程
 
 本文档说明当前 X1 12DOF 项目如何使用 `gm-cli` 提交 Gradmotion 云训练任务、查看日志、下载产物。
 
@@ -106,7 +106,7 @@ powershell -ExecutionPolicy Bypass -File .\ops\gm-cli\download-task-artifacts.ps
 产物目录约定见：
 
 ```text
-doc/cloud_task_artifact_layout.md
+docs/ops/cloud_task_artifact_layout.md
 ```
 
 同步已下载任务产物：
@@ -150,3 +150,4 @@ ops/gm-cli/payloads/*.local.json
 token
 账号密码
 ```
+
