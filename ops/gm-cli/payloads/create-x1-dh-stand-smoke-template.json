@@ -1,0 +1,33 @@
+{
+  "taskBaseInfo": {
+    "projectId": "REPLACE_WITH_GRADMOTION_PROJECT_ID",
+    "taskType": "1",
+    "trainType": "1",
+    "taskName": "x1-dh-stand-smoke",
+    "taskDescription": "Smoke validation task for the X1 12DOF x1_dh_stand training project.",
+    "taskTag": [
+      "x1",
+      "12dof",
+      "smoke",
+      "isaac-gym"
+    ],
+    "goodsId": "REPLACE_WITH_RESOURCE_GOODS_ID",
+    "imageId": "REPLACE_WITH_IMAGE_ID",
+    "imageVersion": "REPLACE_WITH_IMAGE_VERSION",
+    "personalDataPath": "/personal"
+  },
+  "taskCodeInfo": {
+    "codeType": "2",
+    "codeUrl": "[{\"codeUrl\":\"https://github.com/AgibotTech/agibot_x1_train.git\",\"versionType\":\"1\",\"versionName\":\"main\"}]",
+    "versionType": "1",
+    "versionName": "main",
+    "mainCodeUri": "agibot_x1_train/humanoid/scripts/train.py",
+    "hparamsPath": "agibot_x1_train/humanoid/envs/x1/x1_dh_stand_config.py",
+    "startScript": "gm-run agibot_x1_train/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=16 --max_iterations=5",
+    "isOpen": "1"
+  },
+  "runtimeReminderConfig": {
+    "enableRuntimeReminder": false,
+    "reminderDurations": []
+  }
+}
