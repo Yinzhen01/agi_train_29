@@ -11,7 +11,7 @@
 - 保持 `x1_dh_stand` 作为当前主训练任务。
 - 维护清晰的训练说明、奖励解释、PPO 解释和项目对比报告。
 - 支持本地训练、Isaac Gym 回放、导出、sim2sim、Gradmotion GUI 云桌面训练和一键远端部署。
-- 避免将 29DOF/F1 分支逻辑误迁移到当前 12DOF 项目。
+- 保持 X1 12DOF 主线稳定，同时以独立任务接入 F1 29DOF 实验配置。
 
 ## 已完成
 
@@ -21,15 +21,17 @@
 - 迁入并适配 Gradmotion GUI 云桌面、反向 SSH、一键部署和 gm-cli 云任务模板。
 - 将文字文档统一归入 `docs/`，将 README 媒体素材迁移到 `docs/assets/`。
 - 将根 `AGENTS.md` 从通用模板适配为当前项目规则。
+- 新增 `f1_dh_stand` 任务入口，用 F1 29DOF URDF 接入当前训练框架；新增关节默认角和参考动作保持 0。
 
 ## 正在进行
 
 - 按 `AGENTS.md` 规则整理仓库结构、文档路由和忽略规则。
-- 继续保持运维脚本默认任务为 `x1_dh_stand`，避免残留 F1/29DOF 默认值。
+- 继续保持运维脚本默认任务为 `x1_dh_stand`，F1 29DOF 只通过 `f1_dh_stand` 显式运行。
 
 ## 下一步
 
 - 在具备 Isaac Gym/GPU 的环境中运行一次 `x1_dh_stand` 小规模 smoke。
+- 在具备 Isaac Gym/GPU 的环境中运行一次 `f1_dh_stand --num_envs=16 --max_iterations=5` 小规模 smoke。
 - 如果继续使用 Gradmotion 云任务，填充 `ops/gm-cli/payloads/*.local.json` 中的项目、镜像和资源 ID。
 - 如果要迁移 `agi_29` 的 29DOF 奖励或动作逻辑，先逐项核对 DOF 顺序、观测维度、action scale 和 sim2sim 端。
 - 如需提交本次整理，按 `docs/git-workflow.md` 暂存相关路径并使用中文 commit message。
@@ -39,6 +41,7 @@
 - `2026-07-01`：当前项目保留 X1 12DOF 路线，`agi_29` 仅作为 29DOF/F1 参考，不直接混入训练配置。
 - `2026-07-01`：`docs/assets/` 保留媒体素材，文字文档统一放入 `docs/`。
 - `2026-07-01`：`ops/gradmotion/` 和 `ops/gm-cli/` 作为远端训练与云任务能力入口。
+- `2026-07-01`：F1 29DOF 以独立 `f1_dh_stand` 任务接入；腿部参考动作按关节名映射，上半身新增关节默认保持 0。
 
 ## 风险与注意事项
 
@@ -46,6 +49,7 @@
 - `work/` 是本地缓存目录，应忽略不入库。
 - `ops/gm-cli/accounts.local.json`、`ops/gm-cli/payloads/*.local.json`、`cloud_artifacts/`、`outputs/` 都是本地文件，不应提交。
 - 当前环境未必具备 Isaac Gym/GPU；无法运行训练 smoke 时需在最终说明中明确。
+- `f1_dh_stand` 还需要真实 Isaac Gym/GPU smoke；MuJoCo sim2sim 已做 29DOF Kp/Kd/action scale 和 actuator 顺序适配，但仍需用导出策略验证。
 
 ## 更新规则
 

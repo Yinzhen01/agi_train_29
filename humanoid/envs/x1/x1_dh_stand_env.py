@@ -110,11 +110,59 @@ class X1DHStandEnv(LeggedRobot):
         compute_observations(): Computes the observations.
         reset_idx(env_ids): Resets the environment for the specified environment IDs.
     '''
+    DEFAULT_LEG_JOINT_NAMES = [
+        "left_hip_pitch_joint",
+        "left_hip_roll_joint",
+        "left_hip_yaw_joint",
+        "left_knee_pitch_joint",
+        "left_ankle_pitch_joint",
+        "left_ankle_roll_joint",
+        "right_hip_pitch_joint",
+        "right_hip_roll_joint",
+        "right_hip_yaw_joint",
+        "right_knee_pitch_joint",
+        "right_ankle_pitch_joint",
+        "right_ankle_roll_joint",
+    ]
+    DEFAULT_ANKLE_JOINT_NAMES = [
+        "left_ankle_pitch_joint",
+        "left_ankle_roll_joint",
+        "right_ankle_pitch_joint",
+        "right_ankle_roll_joint",
+    ]
+
     def __init__(self, cfg: LeggedRobotCfg, sim_params, physics_engine, sim_device, headless):
         super().__init__(cfg, sim_params, physics_engine, sim_device, headless)
+        self.leg_joint_names = getattr(self.cfg.env, "leg_joint_names", self.DEFAULT_LEG_JOINT_NAMES)
+        if len(self.cfg.rewards.final_swing_joint_delta_pos) != len(self.leg_joint_names):
+            raise ValueError("final_swing_joint_delta_pos must match leg_joint_names length")
+        self.leg_joint_indices = self._resolve_dof_indices(self.leg_joint_names)
+        self.ankle_joint_names = getattr(self.cfg.env, "ankle_joint_names", self.DEFAULT_ANKLE_JOINT_NAMES)
+        self.ankle_joint_indices = self._resolve_dof_indices(self.ankle_joint_names)
+        upper_body_joint_names = getattr(self.cfg.env, "upper_body_joint_names", [])
+        self.upper_body_joint_indices = self._resolve_dof_indices(upper_body_joint_names, required=False)
+        self.left_yaw_roll_indices = self._resolve_dof_indices([
+            "left_hip_roll_joint",
+            "left_hip_yaw_joint",
+            "left_ankle_roll_joint",
+        ])
+        self.right_yaw_roll_indices = self._resolve_dof_indices([
+            "right_hip_roll_joint",
+            "right_hip_yaw_joint",
+            "right_ankle_roll_joint",
+        ])
         self.last_feet_z = self.cfg.rewards.feet_to_ankle_distance
         self.feet_height = torch.zeros((self.num_envs, 2), device=self.device)
         self.ref_dof_pos = torch.zeros((self.num_envs, self.num_actions), device=self.device)      
+
+    def _resolve_dof_indices(self, joint_names, required=True):
+        indices = []
+        for joint_name in joint_names:
+            if joint_name in self.dof_names:
+                indices.append(self.dof_names.index(joint_name))
+            elif required:
+                raise ValueError(f"Joint {joint_name} was not found in asset DOFs: {self.dof_names}")
+        return torch.tensor(indices, dtype=torch.long, device=self.device)
 
 
     def _push_robots(self):
@@ -278,24 +326,20 @@ class X1DHStandEnv(LeggedRobot):
         sin_pos_r = sin_pos.clone()
 
         self.ref_dof_pos = torch.zeros_like(self.dof_pos)
+        leg_ref_dof_pos = torch.zeros(
+            self.num_envs, len(self.leg_joint_names), dtype=torch.float, device=self.device)
+        swing_delta = torch.tensor(
+            self.cfg.rewards.final_swing_joint_delta_pos, dtype=torch.float, device=self.device)
+
         # left swing
         sin_pos_l[sin_pos_l > 0] = 0
-        self.ref_dof_pos[:, 0] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[0]
-        self.ref_dof_pos[:, 1] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[1]
-        self.ref_dof_pos[:, 2] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[2]
-        self.ref_dof_pos[:, 3] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[3]
-        self.ref_dof_pos[:, 4] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[4]
-        self.ref_dof_pos[:, 5] = -sin_pos_l * self.cfg.rewards.final_swing_joint_delta_pos[5]
+        leg_ref_dof_pos[:, :6] = -sin_pos_l.unsqueeze(1) * swing_delta[:6]
         # right
         sin_pos_r[sin_pos_r < 0] = 0
-        self.ref_dof_pos[:, 6] = sin_pos_r *  self.cfg.rewards.final_swing_joint_delta_pos[6]
-        self.ref_dof_pos[:, 7] = sin_pos_r *  self.cfg.rewards.final_swing_joint_delta_pos[7]
-        self.ref_dof_pos[:, 8] = sin_pos_r *  self.cfg.rewards.final_swing_joint_delta_pos[8]
-        self.ref_dof_pos[:, 9] = sin_pos_r *  self.cfg.rewards.final_swing_joint_delta_pos[9]
-        self.ref_dof_pos[:, 10] = sin_pos_r * self.cfg.rewards.final_swing_joint_delta_pos[10]
-        self.ref_dof_pos[:, 11] = sin_pos_r * self.cfg.rewards.final_swing_joint_delta_pos[11]
+        leg_ref_dof_pos[:, 6:] = sin_pos_r.unsqueeze(1) * swing_delta[6:]
 
-        self.ref_dof_pos[torch.abs(sin_pos) < 0.1] = 0.
+        leg_ref_dof_pos[torch.abs(sin_pos) < 0.1] = 0.
+        self.ref_dof_pos[:, self.leg_joint_indices] = leg_ref_dof_pos
         
         # if use_ref_actions=True, action += ref_action
         self.ref_action = 2 * self.ref_dof_pos
@@ -574,10 +618,16 @@ class X1DHStandEnv(LeggedRobot):
         pos_target = self.ref_dof_pos.clone()
         stand_command = (torch.norm(self.commands[:, :3], dim=1) <= self.cfg.commands.stand_com_threshold)
         pos_target[stand_command] = self.default_dof_pos.clone()
-        diff = joint_pos - pos_target
+        diff = joint_pos[:, self.leg_joint_indices] - pos_target[:, self.leg_joint_indices]
         r = torch.exp(-2 * torch.norm(diff, dim=1)) - 0.2 * torch.norm(diff, dim=1).clamp(0, 0.5)
         r[stand_command] = 1.0
         return r
+
+    def _reward_upper_body_zero(self):
+        if len(self.upper_body_joint_indices) == 0:
+            return torch.zeros(self.num_envs, device=self.device)
+        diff = self.dof_pos[:, self.upper_body_joint_indices] - self.default_dof_pos[:, self.upper_body_joint_indices]
+        return torch.exp(-torch.sum(torch.square(diff), dim=1))
     
     def _reward_feet_distance(self):
         """
@@ -665,11 +715,11 @@ class X1DHStandEnv(LeggedRobot):
         on penalizing deviation in yaw and roll directions. Excludes yaw and roll from the main penalty.
         """
         joint_diff = self.dof_pos - self.default_joint_pd_target
-        left_yaw_roll = joint_diff[:, [1,2,5]]
-        right_yaw_roll = joint_diff[:, [7,8,11]]
+        left_yaw_roll = joint_diff[:, self.left_yaw_roll_indices]
+        right_yaw_roll = joint_diff[:, self.right_yaw_roll_indices]
         yaw_roll = torch.norm(left_yaw_roll, dim=1) + torch.norm(right_yaw_roll, dim=1)
         yaw_roll = torch.clamp(yaw_roll - 0.1, 0, 50)
-        return torch.exp(-yaw_roll * 100) - 0.01 * torch.norm(joint_diff, dim=1)
+        return torch.exp(-yaw_roll * 100) - 0.01 * torch.norm(joint_diff[:, self.leg_joint_indices], dim=1)
 
     def _reward_base_height(self):
         """
@@ -824,8 +874,7 @@ class X1DHStandEnv(LeggedRobot):
         Penalizes the use of high torques in the robot's joints. Encourages efficient movement by minimizing
         the necessary force exerted by the motors.
         """
-        ankle_idx = [4,5,10,11]
-        return torch.sum(torch.square(self.torques[:,ankle_idx]), dim=1)
+        return torch.sum(torch.square(self.torques[:, self.ankle_joint_indices]), dim=1)
     
     def _reward_feet_rotation(self):
         feet_euler_xyz = self.feet_euler_xyz

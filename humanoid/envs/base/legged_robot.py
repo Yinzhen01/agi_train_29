@@ -705,7 +705,7 @@ class LeggedRobot(BaseTask):
             [torch.Tensor]: Torques sent to the simulation
         """
         # pd controller
-        actions_scaled = actions * self.cfg.control.action_scale
+        actions_scaled = actions * self.action_scales
         if self.cfg.domain_rand.add_lag:
             self.lag_buffer[:,:,1:] = self.lag_buffer[:,:,:self.cfg.domain_rand.lag_timesteps_range[1]].clone()
             self.lag_buffer[:,:,0] = actions_scaled.clone()
@@ -887,11 +887,16 @@ class LeggedRobot(BaseTask):
             self.height_points = self._init_height_points()
         self.measured_heights = 0
 
-        # joint positions offsets and PD gains
+        # joint positions offsets, action scales and PD gains
         self.default_dof_pos = torch.zeros(self.num_dof, dtype=torch.float, device=self.device, requires_grad=False)
+        self.action_scales = torch.ones(self.num_dof, dtype=torch.float, device=self.device, requires_grad=False) * self.cfg.control.action_scale
+        action_scale_by_joint = getattr(self.cfg.control, "action_scale_by_joint", {})
         for i in range(self.num_dofs):
             name = self.dof_names[i]
             self.default_dof_pos[i] = self.cfg.init_state.default_joint_angles[name]
+            for dof_name, action_scale in action_scale_by_joint.items():
+                if dof_name in name:
+                    self.action_scales[i] = action_scale
             found = False
             for dof_name in self.cfg.control.stiffness.keys():
 

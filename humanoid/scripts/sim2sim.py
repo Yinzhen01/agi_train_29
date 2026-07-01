@@ -132,6 +132,29 @@ def pd_control(target_q, q, kp, target_dq, dq, kd, cfg):
     torque_out = (target_q + cfg.robot_config.default_dof_pos - q ) * kp - dq * kd
     return torque_out
 
+def joint_name_vector(joint_names, keyed_values, default=None):
+    values = []
+    for joint_name in joint_names:
+        matched = False
+        for key, value in keyed_values.items():
+            if key in joint_name:
+                values.append(value)
+                matched = True
+                break
+        if not matched:
+            if default is None:
+                raise KeyError(f"No value configured for joint {joint_name}")
+            values.append(default)
+    return np.array(values, dtype=np.double)
+
+def action_scale_vector(env_cfg, joint_names):
+    action_scales = np.ones(len(joint_names), dtype=np.double) * env_cfg.control.action_scale
+    for i, joint_name in enumerate(joint_names):
+        for key, value in getattr(env_cfg.control, "action_scale_by_joint", {}).items():
+            if key in joint_name:
+                action_scales[i] = value
+    return action_scales
+
 
 def run_mujoco(policy, cfg, env_cfg):
     """
@@ -152,6 +175,15 @@ def run_mujoco(policy, cfg, env_cfg):
     # model data
     data = mujoco.MjData(model)
     num_actuated_joints = env_cfg.env.num_actions  # This should match the number of actuated joints in your model
+    policy_joint_names = list(env_cfg.init_state.default_joint_angles.keys())
+    actuator_joint_names = [
+        mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, model.actuator_trnid[i, 0])
+        for i in range(model.nu)
+    ]
+    if model.nu == num_actuated_joints and all(name in policy_joint_names for name in actuator_joint_names):
+        ctrl_order = np.array([policy_joint_names.index(name) for name in actuator_joint_names])
+    else:
+        ctrl_order = np.arange(num_actuated_joints)
     data.qpos[-num_actuated_joints:] = cfg.robot_config.default_dof_pos
 
 
@@ -227,7 +259,7 @@ def run_mujoco(policy, cfg, env_cfg):
             
             action[:] = policy(torch.tensor(policy_input))[0].detach().numpy()
             action = np.clip(action, -env_cfg.normalization.clip_actions, env_cfg.normalization.clip_actions)
-            target_q = action * env_cfg.control.action_scale
+            target_q = action * cfg.robot_config.action_scales
 
         target_dq = np.zeros((env_cfg.env.num_actions), dtype=np.double)
         # Generate PD control
@@ -235,8 +267,9 @@ def run_mujoco(policy, cfg, env_cfg):
                         target_dq, dq, cfg.robot_config.kds, cfg)  # Calc torques
         tau = np.clip(tau, -cfg.robot_config.tau_limit, cfg.robot_config.tau_limit)  # Clamp torques
         
-        data.ctrl = tau
-        applied_tau = data.actuator_force
+        data.ctrl = tau[ctrl_order]
+        applied_tau = np.zeros_like(tau)
+        applied_tau[ctrl_order] = data.actuator_force
 
         mujoco.mj_step(model, data)
         viewer.render()
@@ -308,13 +341,14 @@ if __name__ == '__main__':
             decimation = 10
 
         class robot_config:
-            # get PD gain
-            kps = np.array([env_cfg.control.stiffness[joint] for joint in env_cfg.control.stiffness.keys()]*2, dtype=np.double)
-            kds = np.array([env_cfg.control.damping[joint] for joint in env_cfg.control.damping.keys()]*2, dtype=np.double)
+            dof_names = list(env_cfg.init_state.default_joint_angles.keys())
+            kps = joint_name_vector(dof_names, env_cfg.control.stiffness)
+            kds = joint_name_vector(dof_names, env_cfg.control.damping)
+            action_scales = action_scale_vector(env_cfg, dof_names)
 
             tau_limit = 500. * np.ones(env_cfg.env.num_actions, dtype=np.double)  # 定义关节力矩的限制
 
-            default_dof_pos = np.array(list(env_cfg.init_state.default_joint_angles.values()))
+            default_dof_pos = np.array(list(env_cfg.init_state.default_joint_angles.values()), dtype=np.double)
 
     # load model
     root_path = os.path.join(LEGGED_GYM_ROOT_DIR, 'logs', args.task, 'exported_policies')
@@ -331,4 +365,3 @@ if __name__ == '__main__':
 
     run_mujoco(policy, Sim2simCfg(), env_cfg)
 
-    
