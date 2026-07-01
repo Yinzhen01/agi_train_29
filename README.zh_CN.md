@@ -1,10 +1,10 @@
-[English](README.md) | 中文
+﻿[English](README.md) | 中文
 
 ## 简介
 [智元灵犀X1](https://www.zhiyuan-robot.com/qzproduct/169.html) 是由智元研发并开源的模块化、高自由度人形机器人，X1的软件系统基于智元开源组件 `AimRT` 作为中间件实现，并且采用强化学习方法进行运动控制。
 
 本工程为智元灵犀X1所使用的强化学习训练代码，可配合智元灵犀X1配套的[推理软件](https://aimrt.org/)进行真机和仿真的行走调试，或导入其他机器人模型进行训练。
-![](doc/id.jpg)
+![](docs/assets/id.jpg)
 
 ## 代码运行
 
@@ -28,11 +28,11 @@
 #### Train:
 ```python scripts/train.py --task=x1_dh_stand --run_name=<run_name> --headless```
 - 训练好的模型会存`/log/<experiment_name>/exported_data/<date_time><run_name>/model_<iteration>.pt` 其中 `<experiment_name>` 在config文件中定义.
-![](doc/train.gif)
+![](docs/assets/train.gif)
 
 #### Play:
 ```python /scripts/play.py --task=x1_dh_stand --load_run=<date_time><run_name>```
-![](doc/play.gif)
+![](docs/assets/play.gif)
 
 #### 生成jit模型:
 ``` python scripts/export_policy_dh.py --task=x1_dh_stand --load_run=<date_time><run_name>  ```
@@ -66,11 +66,11 @@
   ```
   python scripts/sim2sim.py --task=x1_dh_stand --load_model /path/to/exported_policies/
   ```
-![](doc/mujoco.gif)
+![](docs/assets/mujoco.gif)
 
 ### 手柄使用
 我们使用Logitech f710手柄，在启动play.py和sim2sim.py时，按住4的同时转动摇杆可以控制机器人前后，左右和旋转。
-![](doc/joy_map.jpg)
+![](docs/assets/joy_map.jpg)
 |         按键          |         命令         |
 | -------------------- |:--------------------:|
 |         4 + 1-       |         前进          |
@@ -102,6 +102,7 @@
 > * [GitHub - leggedrobotics/legged_gym: Isaac Gym Environments for Legged Robots](https://github.com/leggedrobotics/legged_gym)
 > * [GitHub - leggedrobotics/rsl_rl: Fast and simple implementation of RL algorithms, designed to run fully on GPU.](https://github.com/leggedrobotics/rsl_rl)
 > * [GitHub - roboterax/humanoid-gym: Humanoid-Gym: Reinforcement Learning for Humanoid Robot with Zero-Shot Sim2Real Transfer https://arxiv.org/abs/2404.05695](https://github.com/roboterax/humanoid-gym)
+
 
 
 

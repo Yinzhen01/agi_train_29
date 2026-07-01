@@ -1,4 +1,4 @@
-# 当前项目 vs E:\agi_origin 差异分析报告
+﻿# 当前项目 vs E:\agi_origin 差异分析报告
 
 生成时间：2026-06-30  
 当前项目：`F:\agibot_x1_train`  
@@ -9,13 +9,13 @@
 
 `E:\agi_origin` 与当前项目同属 12DOF X1 路线，核心 PPO、utils、base 环境和大部分资源文件保持一致。它不是 29DOF 扩展版，而是一个带实验记录、诊断脚本、训练指标包装器、IK 摆腿参考和 CSV 采集逻辑的实验版。
 
-当前项目更干净、更接近基础训练版：保留原始正弦摆腿参考，训练迭代数为 20000，保存间隔 100，并带有 `doc` 演示资源。`agi_origin` 则更偏 6.x 实验过程：将 URDF 文件改为 `X1_12DOF.urdf`，引入 minimum-jerk 足端轨迹和近似 IK，增加髋 yaw/roll 与左右腿对称奖励，把训练迭代数改成 50，并额外提供 GradMotion metrics 解析脚本和大量诊断 CSV/实验记录。
+当前项目更干净、更接近基础训练版：保留原始正弦摆腿参考，训练迭代数为 20000，保存间隔 100，并带有 `docs/assets/` 演示资源。`agi_origin` 则更偏 6.x 实验过程：将 URDF 文件改为 `X1_12DOF.urdf`，引入 minimum-jerk 足端轨迹和近似 IK，增加髋 yaw/roll 与左右腿对称奖励，把训练迭代数改成 50，并额外提供 GradMotion metrics 解析脚本和大量诊断 CSV/实验记录。
 
 ## 2. 版本与文件规模
 
 | 项目 | 最近提交 | 文件数 | 总大小 | 主要差异 |
 |---|---:|---:|---:|---|
-| 当前项目 | `e6651b9 first commit` | 104 | 303.05 MB | 含 `doc` 图片/GIF；基础 12DOF 训练版 |
+| 当前项目 | `e6651b9 first commit` | 104 | 303.05 MB | 含 `docs/assets/` 图片/GIF；基础 12DOF 训练版 |
 | `E:\agi_origin` | `5a839c4 添加训练测试代码` | 111 | 70.58 MB | 含 `czy` 实验目录、旧报告、诊断脚本 |
 
 文件哈希对比结果：
@@ -41,11 +41,11 @@
 
 当前项目独有：
 
-- `doc/id.jpg`
-- `doc/joy_map.jpg`
-- `doc/mujoco.gif`
-- `doc/play.gif`
-- `doc/train.gif`
+- `docs/assets/id.jpg`
+- `docs/assets/joy_map.jpg`
+- `docs/assets/mujoco.gif`
+- `docs/assets/play.gif`
+- `docs/assets/train.gif`
 - `resources/robots/x1/urdf/x1.urdf`
 - `resources/robots/x1/meshes/lumber_pitch.STL`
 - `resources/robots/x1/meshes/lumber_roll.STL`
@@ -415,3 +415,4 @@ f(s) = a0 + a1s + a2s^2 + a3s^3 + a4s^4 + a5s^5
 ## 11. 一句话判断
 
 当前项目是干净的 12DOF X1 基线；`E:\agi_origin` 是同一 12DOF 路线上的实验诊断版，核心网络维度兼容，但训练目标、URDF、参考轨迹、奖励和评估脚本已经明显分叉。
+

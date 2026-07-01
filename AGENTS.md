@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 ## 目的
 
@@ -28,7 +28,7 @@ num_privileged_obs = 219
 
 ## 仓库工作规则
 
-- `doc/` 只保留 README 使用的图片/GIF 等媒体素材；文字说明文档放入 `docs/`。
+- `docs/assets/` 存放 README 使用的图片/GIF 等媒体素材；文字说明文档放入 `docs/`。
 - 训练、部署、云桌面、gm-cli 和排障说明放在 `docs/ops/`。
 - 项目对比和分析报告放在 `docs/reports/`。
 - 运维脚本放在 `ops/`，其中 `ops/gradmotion/` 管理 Gradmotion GUI 云桌面和远端部署，`ops/gm-cli/` 管理云任务模板和产物下载。
@@ -46,7 +46,7 @@ num_privileged_obs = 219
 - `docs/`：项目说明、长期状态、Git 工作流、运维文档和分析报告。
 - `docs/ops/`：远端部署、云桌面、gm-cli 和云任务产物说明。
 - `docs/reports/`：当前项目与其他分支/项目的差异报告。
-- `doc/`：README 媒体素材，不放文字运维文档。
+- `docs/assets/`：README 媒体素材。
 - `work/`：本地缓存/临时资料，忽略不入库。
 
 ## 常用命令
@@ -145,3 +145,4 @@ python -m json.tool ops/gm-cli/payloads/create-x1-dh-stand-train-template.json
 ## 演进记录
 
 - `2026-07-01`：将通用 AGENTS 模板适配为当前 X1 训练项目规则，统一文档路由、常用命令、验证策略和知识索引。
+

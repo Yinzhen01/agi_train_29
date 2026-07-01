@@ -1,4 +1,4 @@
-# Cloud Task Artifact Layout
+﻿# Cloud Task Artifact Layout
 
 This document defines the local directory convention for files downloaded from Gradmotion cloud tasks.
 
@@ -18,7 +18,7 @@ cloud_artifacts/tasks/<TASK_ID>/
 
 `cloud_artifacts/` is ignored by Git.
 
-Do not store downloaded checkpoints, task logs, or signed URLs in `doc/`, `ops/`, `resources/`, or the repository root.
+Do not store downloaded checkpoints, task logs, or signed URLs in `docs/`, `ops/`, `resources/`, or the repository root.
 
 ## Per-Task Layout
 
@@ -135,7 +135,7 @@ full raw training logs
 signed download URLs intended only for local use
 ```
 
-Short human-readable conclusions may be added to `doc/` when they are useful for future work, but large raw artifacts should stay local.
+Short human-readable conclusions may be added to `docs/` when they are useful for future work, but large raw artifacts should stay local.
 
 ## Related Directories
 
@@ -146,3 +146,4 @@ ops/gm-cli/payloads/
 ```
 
 Payload files such as `create-*.json`, `edit-*.json`, and `copy-*.json` should remain uncommitted unless a specific known-good template is intentionally preserved.
+

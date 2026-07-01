@@ -1,4 +1,4 @@
-# 项目状态
+﻿# 项目状态
 
 本文档用于长期项目的低成本上下文恢复。只记录会影响后续推进的阶段、目标、关键决策和风险；不要记录每个小改动或完整聊天历史。
 
@@ -19,7 +19,7 @@
 - 生成当前项目与 `E:\agi_29` 的差异报告：`docs/reports/CURRENT_vs_AGI_29_DIFF_REPORT.md`。
 - 生成当前项目与 `E:\agi_origin` 的差异报告：`docs/reports/CURRENT_vs_AGI_ORIGIN_DIFF_REPORT.md`。
 - 迁入并适配 Gradmotion GUI 云桌面、反向 SSH、一键部署和 gm-cli 云任务模板。
-- 将文字文档统一归入 `docs/`，保留 `doc/` 作为 README 媒体素材目录。
+- 将文字文档统一归入 `docs/`，将 README 媒体素材迁移到 `docs/assets/`。
 - 将根 `AGENTS.md` 从通用模板适配为当前项目规则。
 
 ## 正在进行
@@ -37,12 +37,12 @@
 ## 关键决策
 
 - `2026-07-01`：当前项目保留 X1 12DOF 路线，`agi_29` 仅作为 29DOF/F1 参考，不直接混入训练配置。
-- `2026-07-01`：`doc/` 保留媒体素材，文字文档统一放入 `docs/`。
+- `2026-07-01`：`docs/assets/` 保留媒体素材，文字文档统一放入 `docs/`。
 - `2026-07-01`：`ops/gradmotion/` 和 `ops/gm-cli/` 作为远端训练与云任务能力入口。
 
 ## 风险与注意事项
 
-- `doc/play.gif`、`doc/train.gif`、`doc/mujoco.gif` 是较大文件，GitHub 会提示建议使用 Git LFS；当前已存在于仓库历史，不在本次整理中移动。
+- `docs/assets/play.gif`、`docs/assets/train.gif`、`docs/assets/mujoco.gif` 是较大文件，GitHub 会提示建议使用 Git LFS；当前保留它们作为 README 媒体素材。
 - `work/` 是本地缓存目录，应忽略不入库。
 - `ops/gm-cli/accounts.local.json`、`ops/gm-cli/payloads/*.local.json`、`cloud_artifacts/`、`outputs/` 都是本地文件，不应提交。
 - 当前环境未必具备 Isaac Gym/GPU；无法运行训练 smoke 时需在最终说明中明确。
@@ -52,3 +52,5 @@
 - 完成阶段性任务、切换里程碑、发现阻塞或形成关键决策时更新本文档。
 - 不要把项目阶段、短期进度或任务流水写入根目录 `AGENTS.md`。
 - 如果状态变化只影响当前对话，不影响后续推进，不需要写入本文档。
+
+

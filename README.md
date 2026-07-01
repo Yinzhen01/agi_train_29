@@ -1,9 +1,9 @@
-English | [中文](README.zh_CN.md)
+﻿English | [中文](README.zh_CN.md)
 ## Introduction
 [AgiBot X1](https://www.zhiyuan-robot.com/qzproduct/169.html) is a modular humanoid robot with high dof developed and open-sourced by AgiBot. It is built upon AgiBot's open-source framework `AimRT` as middleware and using reinforcement learning for locomotion control.
 
 This project is about the reinforcement learning training code used by AgiBot X1. It can be used in conjunction with the [inference software](https://aimrt.org/) provided with AgiBot X1 for real-robot and simulated walking debugging, or be imported to other robot models for training.
-![](doc/id.jpg)
+![](docs/assets/id.jpg)
 
 ## Start
 
@@ -26,11 +26,11 @@ This project is about the reinforcement learning training code used by AgiBot X1
 #### Train:
 ```python scripts/train.py --task=x1_dh_stand --run_name=<run_name> --headless```
 - The trained model will be saved in `/log/<experiment_name>/exported_data/<date_time><run_name>/model_<iteration>.pt`, where `<experiment_name>` is defined in the config file.
-![](doc/train.gif)
+![](docs/assets/train.gif)
 
 #### Play:
 ```python /scripts/play.py --task=x1_dh_stand --load_run=<date_time><run_name>```
-![](doc/play.gif)
+![](docs/assets/play.gif)
 #### Generate the JIT Model:
 ``` python scripts/export_policy_dh.py --task=x1_dh_stand --load_run=<date_time><run_name>  ```
 - The JIT model will be saved in ``` log/exported_policies/<date_time>```
@@ -62,10 +62,10 @@ Use Mujoco for sim2sim validation:
   ```
   python scripts/sim2sim.py --task=x1_dh_stand --load_model /path/to/exported_policies/
   ```
-![](doc/mujoco.gif)
+![](docs/assets/mujoco.gif)
 ### Usage of Joystick
 We use the Logitech F710 Joystick. When starting play.py and sim2sim.py, press and hold button 4 while rotating the joystick to control the robot to move forward/backward, strafe left/right or rotate.
-![](doc/joy_map.jpg)
+![](docs/assets/joy_map.jpg)
 |         Button           |         Command         |
 | -------------------- |:--------------------:|
 |         4 + 1-        |         Move forward          |
@@ -94,4 +94,5 @@ We use the Logitech F710 Joystick. When starting play.py and sim2sim.py, press a
 > * [GitHub - leggedrobotics/legged_gym: Isaac Gym Environments for Legged Robots](https://github.com/leggedrobotics/legged_gym)
 > * [GitHub - leggedrobotics/rsl_rl: Fast and simple implementation of RL algorithms, designed to run fully on GPU.](https://github.com/leggedrobotics/rsl_rl)
 > * [GitHub - roboterax/humanoid-gym: Humanoid-Gym: Reinforcement Learning for Humanoid Robot with Zero-Shot Sim2Real Transfer https://arxiv.org/abs/2404.05695](https://github.com/roboterax/humanoid-gym)
+
 

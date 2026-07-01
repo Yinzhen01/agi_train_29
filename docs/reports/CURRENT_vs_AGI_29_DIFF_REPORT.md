@@ -1,4 +1,4 @@
-# 当前项目 vs E:\agi_29 差异分析报告
+﻿# 当前项目 vs E:\agi_29 差异分析报告
 
 生成时间：2026-06-30  
 当前项目：`F:\agibot_x1_train`  
@@ -15,8 +15,8 @@
 
 | 项目 | 最近提交 | 文件数 | 总大小 | 主要差异 |
 |---|---:|---:|---:|---|
-| 当前项目 | `e6651b9 first commit` | 104 | 303.05 MB | 含 `doc` 图片/GIF；12DOF X1 资源 |
-| `E:\agi_29` | `5d0d9b0 first commit` | 106 | 67.95 MB | 无 `doc`；使用 `f1_29` 机器人资源 |
+| 当前项目 | `e6651b9 first commit` | 104 | 303.05 MB | 含 `docs/assets/` 图片/GIF；12DOF X1 资源 |
+| `E:\agi_29` | `5d0d9b0 first commit` | 106 | 67.95 MB | 无对应媒体素材目录；使用 `f1_29` 机器人资源 |
 
 文件哈希对比结果：
 
@@ -356,13 +356,13 @@ left_hip_yaw ≈ -right_hip_yaw
 
 ## 8. 当前项目独有内容
 
-当前项目独有 `doc` 目录：
+当前项目独有 `docs/assets/` 媒体素材：
 
-- `doc/id.jpg`
-- `doc/joy_map.jpg`
-- `doc/mujoco.gif`
-- `doc/play.gif`
-- `doc/train.gif`
+- `docs/assets/id.jpg`
+- `docs/assets/joy_map.jpg`
+- `docs/assets/mujoco.gif`
+- `docs/assets/play.gif`
+- `docs/assets/train.gif`
 
 这些文档资源体积较大，也是当前项目总大小远大于 `agi_29` 的主要原因。
 
@@ -381,3 +381,4 @@ left_hip_yaw ≈ -right_hip_yaw
 ## 10. 一句话判断
 
 当前项目是 12DOF X1 稳定训练基线；`E:\agi_29` 是 29DOF F1/扩展 X1 适配分支。两者策略、模型、观测和控制链路不兼容，不能只替换某个脚本或配置文件来混用。
+
