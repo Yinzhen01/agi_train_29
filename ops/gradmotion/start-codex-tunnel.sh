@@ -10,13 +10,14 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 BOOTSTRAP_SCRIPT="${SCRIPT_DIR}/bootstrap-gui-desktop.sh"
 PUBLIC_KEY_FILE="${CODEX_TUNNEL_PUBLIC_KEY_FILE:-${SCRIPT_DIR}/codex_gradmotion.pub}"
 
-ECS_HOST="${CODEX_TUNNEL_ECS_HOST:-121.40.166.191}"
+ECS_HOST="${CODEX_TUNNEL_ECS_HOST:-47.252.37.167}"
 ECS_USER="${CODEX_TUNNEL_ECS_USER:-root}"
 REMOTE_PORT="${CODEX_TUNNEL_REMOTE_PORT:-2222}"
 REMOTE_BIND="${CODEX_TUNNEL_REMOTE_BIND:-}"
 LOCAL_HOST="${CODEX_TUNNEL_LOCAL_HOST:-localhost}"
 LOCAL_PORT="${CODEX_TUNNEL_LOCAL_PORT:-22}"
 STRICT_HOST_KEY="${CODEX_TUNNEL_STRICT_HOST_KEY:-accept-new}"
+IDENTITY_FILE="${CODEX_TUNNEL_IDENTITY_FILE:-}"
 CONDA_ENV="${CONDA_ENV:-pointfoot_legged_gym}"
 CONDA_AUTO_ACTIVATE="${CONDA_AUTO_ACTIVATE:-1}"
 
@@ -38,16 +39,18 @@ Options:
   --remote-port PORT       Remote ECS port for this Gradmotion desktop. Default: 2222.
   --ecs-host HOST          ECS public host/IP. Default comes from the project script.
   --ecs-user USER          ECS SSH user. Default: root.
+  --identity-file PATH     SSH private key used by this desktop to log in to ECS.
   --remote-bind ADDR       Remote bind address, for example 0.0.0.0.
   --no-bootstrap           Skip environment bootstrap and only start the tunnel.
   --bootstrap-must-pass    Do not start the tunnel if bootstrap fails.
   -h, --help               Show this help.
 
 Environment overrides:
-  CODEX_TUNNEL_ECS_HOST=121.40.166.191
+  CODEX_TUNNEL_ECS_HOST=47.252.37.167
   CODEX_TUNNEL_ECS_USER=root
   CODEX_TUNNEL_REMOTE_PORT=2222
   CODEX_TUNNEL_REMOTE_BIND=
+  CODEX_TUNNEL_IDENTITY_FILE=
   CODEX_TUNNEL_PUBLIC_KEY_FILE=ops/gradmotion/codex_gradmotion.pub
   CONDA_ENV=pointfoot_legged_gym
   CONDA_AUTO_ACTIVATE=1
@@ -57,6 +60,7 @@ Environment overrides:
 Examples:
   bash ops/gradmotion/start-codex-tunnel.sh
   bash ops/gradmotion/start-codex-tunnel.sh --remote-port 2223
+  bash ops/gradmotion/start-codex-tunnel.sh --identity-file ~/.ssh/codex_tunnel_to_ecs --no-bootstrap
   bash ops/gradmotion/start-codex-tunnel.sh --no-bootstrap --remote-port 2224
   bash ops/gradmotion/start-codex-tunnel.sh -- --skip-gui-smoke
 EOF
@@ -122,6 +126,10 @@ parse_args() {
         ;;
       --ecs-user)
         ECS_USER="${2:?Missing value for --ecs-user}"
+        shift 2
+        ;;
+      --identity-file)
+        IDENTITY_FILE="${2:?Missing value for --identity-file}"
         shift 2
         ;;
       --remote-bind)
@@ -236,14 +244,22 @@ run_bootstrap() {
 
 start_reverse_tunnel() {
   local reverse_spec
+  local ssh_args=()
   if [[ -n "${REMOTE_BIND}" ]]; then
     reverse_spec="${REMOTE_BIND}:${REMOTE_PORT}:${LOCAL_HOST}:${LOCAL_PORT}"
   else
     reverse_spec="${REMOTE_PORT}:${LOCAL_HOST}:${LOCAL_PORT}"
   fi
 
+  if [[ -n "${IDENTITY_FILE}" ]]; then
+    ssh_args+=("-i" "${IDENTITY_FILE}")
+  fi
+
   log "Starting reverse SSH tunnel"
   log "ECS: ${ECS_USER}@${ECS_HOST}"
+  if [[ -n "${IDENTITY_FILE}" ]]; then
+    log "Identity file: ${IDENTITY_FILE}"
+  fi
   log "Remote forward: ${reverse_spec}"
   log "Keep this terminal open. Press Ctrl-C to close the tunnel."
 
@@ -253,6 +269,7 @@ start_reverse_tunnel() {
     -o ServerAliveInterval=30 \
     -o ServerAliveCountMax=3 \
     -o StrictHostKeyChecking="${STRICT_HOST_KEY}" \
+    "${ssh_args[@]}" \
     -R "${reverse_spec}" \
     "${ECS_USER}@${ECS_HOST}"
 }

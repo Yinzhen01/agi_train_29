@@ -122,6 +122,12 @@ bash ops/gradmotion/gui-desktop-train.sh tensorboard
 bash ops/gradmotion/start-codex-tunnel.sh
 ```
 
+如果 ECS 需要指定 SSH 私钥，从云桌面运行：
+
+```bash
+bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs
+```
+
 它会做三件事：
 
 ```text

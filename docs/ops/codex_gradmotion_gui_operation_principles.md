@@ -87,6 +87,12 @@ git pull
 bash ops/gradmotion/start-codex-tunnel.sh
 ```
 
+如果新 ECS 只接受指定私钥登录，先把私钥放到云桌面的 `/root/.ssh/` 下并设为 `600` 权限，然后使用：
+
+```bash
+bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs
+```
+
 这个脚本负责：
 
 ```text
@@ -136,7 +142,7 @@ tunnel-login-ok
 本项目当前常用的连接形态是：
 
 ```text
-ECS 公网 IP: 121.40.166.191
+ECS 公网 IP: 47.252.37.167
 默认反向端口: 2222
 Gradmotion 项目目录: /root/limx_rl/agibot_x1_train
 ```
