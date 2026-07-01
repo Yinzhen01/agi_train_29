@@ -239,6 +239,24 @@ EOF
   exit 3
 }
 
+print_ecs_public_key_action() {
+  if [[ -z "${IDENTITY_FILE}" || ! -f "${IDENTITY_FILE}.pub" ]]; then
+    return
+  fi
+
+  cat >&2 <<EOF
+[codex-tunnel] ECS rejected this identity file, or the tunnel SSH connection failed:
+[codex-tunnel]   ${IDENTITY_FILE}
+[ACTION REQUIRED]
+Make sure this public key exists in ${ECS_USER}@${ECS_HOST}:/root/.ssh/authorized_keys:
+
+$(cat "${IDENTITY_FILE}.pub")
+
+Then rerun:
+  bash ops/gradmotion/start-codex-tunnel.sh --identity-file ${IDENTITY_FILE} --no-bootstrap --remote-port ${REMOTE_PORT}
+EOF
+}
+
 ensure_local_sshd() {
   if command -v ss >/dev/null 2>&1 && ss -lnt | awk '$4 ~ /(^|:|\])22$/ { found=1 } END { exit found ? 0 : 1 }'; then
     log "Local SSH service is listening on port 22"
@@ -306,7 +324,8 @@ start_reverse_tunnel() {
   log "Remote forward: ${reverse_spec}"
   log "Keep this terminal open. Press Ctrl-C to close the tunnel."
 
-  exec ssh \
+  set +e
+  ssh \
     -N \
     -o ExitOnForwardFailure=yes \
     -o ServerAliveInterval=30 \
@@ -315,6 +334,13 @@ start_reverse_tunnel() {
     "${ssh_args[@]}" \
     -R "${reverse_spec}" \
     "${ECS_USER}@${ECS_HOST}"
+  local status=$?
+  set -e
+
+  if [[ "${status}" -ne 0 ]]; then
+    print_ecs_public_key_action
+  fi
+  exit "${status}"
 }
 
 main() {
