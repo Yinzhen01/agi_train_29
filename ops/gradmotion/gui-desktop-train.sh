@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 
 # Helper for interactive Gradmotion cloud desktops with Isaac Gym viewer.
