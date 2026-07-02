@@ -6,7 +6,7 @@
 
 ## 项目介绍
 
-- 项目名称：`agibot_x1_train`
+- 项目名称：`agi_train_29`
 - 项目类型：Isaac Gym 人形机器人强化学习训练工程
 - 核心任务：`x1_dh_stand`
 - 机器人模型：X1 12DOF 腿部控制模型

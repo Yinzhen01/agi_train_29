@@ -6,10 +6,10 @@
 
 | 项目 | 值 |
 |---|---|
-| Git 仓库 | `https://github.com/AgibotTech/agibot_x1_train.git` |
+| Git 仓库 | `https://github.com/Yinzhen01/agi_train_29.git` |
 | 任务名 | `x1_dh_stand` |
-| 训练入口 | `agibot_x1_train/humanoid/scripts/train.py` |
-| 配置文件 | `agibot_x1_train/humanoid/envs/x1/x1_dh_stand_config.py` |
+| 训练入口 | `agi_train_29/humanoid/scripts/train.py` |
+| 配置文件 | `agi_train_29/humanoid/envs/x1/x1_dh_stand_config.py` |
 | smoke 模板 | `ops/gm-cli/payloads/create-x1-dh-stand-smoke-template.json` |
 | train 模板 | `ops/gm-cli/payloads/create-x1-dh-stand-train-template.json` |
 
@@ -86,13 +86,13 @@ gm task stop --task-id TASK_xxx
 Smoke：
 
 ```bash
-gm-run agibot_x1_train/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=16 --max_iterations=5
+gm-run agi_train_29/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=16 --max_iterations=5
 ```
 
 正式训练：
 
 ```bash
-gm-run agibot_x1_train/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=4096 --max_iterations=3000 --run_name=x1_dh_stand_v1
+gm-run agi_train_29/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=4096 --max_iterations=3000 --run_name=x1_dh_stand_v1
 ```
 
 ## 6. 下载云端产物
@@ -121,14 +121,14 @@ powershell -ExecutionPolicy Bypass -File .\ops\gm-cli\sync-task-artifacts.ps1 -T
 
 ```text
 taskCodeInfo.commitId 不为空
-日志中出现 /workspace/agibot_x1_train/
+日志中出现 /workspace/agi_train_29/
 训练入口文件能被正常打开
 ```
 
 若日志显示找不到：
 
 ```text
-agibot_x1_train/humanoid/scripts/train.py
+agi_train_29/humanoid/scripts/train.py
 ```
 
 优先检查：

@@ -23,7 +23,7 @@ Codex / 本地机器
 在 Gradmotion GUI 云桌面终端中：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 bash ops/gradmotion/start-codex-tunnel.sh
 ```
 

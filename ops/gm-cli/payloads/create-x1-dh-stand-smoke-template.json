@@ -18,12 +18,12 @@
   },
   "taskCodeInfo": {
     "codeType": "2",
-    "codeUrl": "[{\"codeUrl\":\"https://github.com/AgibotTech/agibot_x1_train.git\",\"versionType\":\"1\",\"versionName\":\"main\"}]",
+    "codeUrl": "[{\"codeUrl\":\"https://github.com/Yinzhen01/agi_train_29.git\",\"versionType\":\"1\",\"versionName\":\"main\"}]",
     "versionType": "1",
     "versionName": "main",
-    "mainCodeUri": "agibot_x1_train/humanoid/scripts/train.py",
-    "hparamsPath": "agibot_x1_train/humanoid/envs/x1/x1_dh_stand_config.py",
-    "startScript": "gm-run agibot_x1_train/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=16 --max_iterations=5",
+    "mainCodeUri": "agi_train_29/humanoid/scripts/train.py",
+    "hparamsPath": "agi_train_29/humanoid/envs/x1/x1_dh_stand_config.py",
+    "startScript": "gm-run agi_train_29/humanoid/scripts/train.py --task=x1_dh_stand --headless --num_envs=16 --max_iterations=5",
     "isOpen": "1"
   },
   "runtimeReminderConfig": {

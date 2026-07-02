@@ -1,6 +1,6 @@
 ﻿# X1 12DOF 远端训练部署流程
 
-本文档说明如何把当前 `agibot_x1_train` 项目部署到远端机器或 Gradmotion GUI 云桌面，并启动 `x1_dh_stand` 训练。
+本文档说明如何把当前 `agi_train_29` 项目部署到远端机器或 Gradmotion GUI 云桌面，并启动 `x1_dh_stand` 训练。
 
 ## 1. 项目信息
 
@@ -48,7 +48,7 @@ bash ops/gradmotion/deploy_x1_remote.sh --server root@SERVER_IP --conda-env poin
 ```bash
 bash ops/gradmotion/deploy_x1_remote.sh \
   --local-deploy \
-  --archive ./agibot_x1_train.tar.gz \
+  --archive ./agi_train_29.tar.gz \
   --conda-env pointfoot_legged_gym \
   --gpu 0
 ```
@@ -64,7 +64,22 @@ bash ops/gradmotion/deploy_x1_remote.sh --server root@SERVER_IP --skip-smoke
 新云桌面已经 clone 本项目后，推荐先运行：
 
 ```bash
+cd /root/limx_rl/agi_train_29
 bash ops/gradmotion/bootstrap-gui-desktop.sh
+```
+
+如果不确定项目 clone 到哪里，先找仓库目录：
+
+```bash
+find /root -maxdepth 4 -type d -name .git 2>/dev/null
+```
+
+如果没有找到当前项目，重新 clone：
+
+```bash
+cd /root/limx_rl
+git clone https://github.com/Yinzhen01/agi_train_29.git
+cd agi_train_29
 ```
 
 这个脚本默认会：
@@ -127,7 +142,7 @@ bash ops/gradmotion/gui-desktop-train.sh tensorboard
 不要把本机或 ECS 私钥复制进仓库。新云桌面第一次启动时，让它生成一把只属于这台云桌面的隧道私钥：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 git pull
 bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs --no-bootstrap
 ```
@@ -166,7 +181,7 @@ bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunne
 同一台云桌面后续只需要：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 git pull
 bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunnel_to_ecs --no-bootstrap
 ```

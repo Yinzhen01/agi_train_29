@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 
-PROJECT_NAME_DEFAULT="agibot_x1_train"
+PROJECT_NAME_DEFAULT="agi_train_29"
 PROJECT_NAME="$PROJECT_NAME_DEFAULT"
 REMOTE_DIR="/home/gm_dexoyil185/Documents"
 TASK="x1_dh_stand"
@@ -25,15 +25,15 @@ usage() {
   cat <<'EOF'
 Usage:
   bash ops/gradmotion/deploy_x1_remote.sh --server root@SERVER_IP [options]
-  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agibot_x1_train.tar.gz [options]
+  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agi_train_29.tar.gz [options]
 
 Common examples:
   # Step 1: run on the old/local computer, then manually copy the tar.gz and this script.
   bash ops/gradmotion/deploy_x1_remote.sh --package-only
 
   # Step 2: run on the new/remote computer after manual copy.
-  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agibot_x1_train.tar.gz --conda-env pointfoot_legged_gym --gpu 0
-  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agibot_x1_train.tar.gz --gpu 0
+  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agi_train_29.tar.gz --conda-env pointfoot_legged_gym --gpu 0
+  bash ops/gradmotion/deploy_x1_remote.sh --local-deploy --archive ./agi_train_29.tar.gz --gpu 0
 
   # Optional: one-command SSH upload/deploy mode.
   bash ops/gradmotion/deploy_x1_remote.sh --server root@1.2.3.4
@@ -44,7 +44,7 @@ Options:
   --server HOST          Remote SSH target, for example root@1.2.3.4.
   --local-deploy         Deploy on the current machine from an existing tar.gz archive.
   --remote-dir DIR      Target parent directory. Default: /home/gm_dexoyil185/Documents.
-  --project-name NAME    Project directory inside the archive. Default: agibot_x1_train.
+  --project-name NAME    Project directory inside the archive. Default: agi_train_29.
   --task TASK           Training task to validate. Default: x1_dh_stand.
   --python CMD          Remote Python executable. Default: python.
   --local-python CMD    Local Python executable for tar integrity check. Default: python3.
@@ -52,7 +52,7 @@ Options:
   --gpu ID              Export CUDA_VISIBLE_DEVICES=ID before smoke test.
   --smoke-envs N        Number of envs for smoke test. Default: 64.
   --smoke-iters N       Max iterations for smoke test. Default: 10.
-  --archive PATH        Local tar.gz path. Default: ../agibot_x1_train.tar.gz.
+  --archive PATH        Local tar.gz path. Default: ../agi_train_29.tar.gz.
   --skip-package        Reuse an existing local archive instead of creating one.
   --skip-upload         Reuse an existing remote archive instead of uploading one.
   --skip-smoke          Install and validate config only, without running train.py.

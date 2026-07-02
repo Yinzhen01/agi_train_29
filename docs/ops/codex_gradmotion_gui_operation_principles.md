@@ -82,7 +82,7 @@ bash ops/gradmotion/gui-desktop-train.sh open-app xclock
 新 Gradmotion GUI 云桌面已经 clone 项目后，优先使用：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 git pull
 bash ops/gradmotion/start-codex-tunnel.sh
 ```
@@ -107,7 +107,7 @@ bash ops/gradmotion/start-codex-tunnel.sh --identity-file /root/.ssh/codex_tunne
 如果云桌面只是重启过，项目和 Python 环境还在，可用更快入口：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 git pull
 bash ops/gradmotion/start-codex-tunnel.sh --no-bootstrap
 ```
@@ -144,7 +144,7 @@ tunnel-login-ok
 ```text
 ECS 公网 IP: 47.252.37.167
 默认反向端口: 2222
-Gradmotion 项目目录: /root/limx_rl/agibot_x1_train
+Gradmotion 项目目录: /root/limx_rl/agi_train_29
 ```
 
 不要把 ECS 密码、云桌面登录 token、签名 URL、私钥写入仓库或聊天记录。

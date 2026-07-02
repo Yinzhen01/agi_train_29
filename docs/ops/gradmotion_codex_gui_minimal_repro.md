@@ -7,7 +7,7 @@
 在 Gradmotion GUI 云桌面里打开终端，进入项目目录：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 ```
 
 启动一键入口：
@@ -45,7 +45,7 @@ ssh -i ~/.ssh/codex_gradmotion_ed25519 -p 2222 root@<ECS_PUBLIC_IP> \
 在 SSH 进入的云桌面 shell 中运行：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 bash ops/gradmotion/gui-desktop-train.sh gui-env
 bash ops/gradmotion/gui-desktop-train.sh open-app xclock
 ```
@@ -57,7 +57,7 @@ bash ops/gradmotion/gui-desktop-train.sh open-app xclock
 最小 viewer：
 
 ```bash
-cd /root/limx_rl/agibot_x1_train
+cd /root/limx_rl/agi_train_29
 bash ops/gradmotion/gui-desktop-train.sh gui-single
 ```
 
