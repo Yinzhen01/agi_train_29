@@ -78,7 +78,7 @@ class F1DHStandCfg(X1DHStandCfg):
         knee_name = "knee_pitch_link"
 
     class init_state(X1DHStandCfg.init_state):
-        pos = [0.0, 0.0, 0.7]
+        pos = [0.0, 0.0, 0.625]
         default_joint_angles = {name: 0.0 for name in F1_DOF_NAMES}
 
     class control(X1DHStandCfg.control):

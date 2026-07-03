@@ -184,9 +184,15 @@ def run_mujoco(policy, cfg, env_cfg):
         ctrl_order = np.array([policy_joint_names.index(name) for name in actuator_joint_names])
     else:
         ctrl_order = np.arange(num_actuated_joints)
+    if model.nq >= num_actuated_joints + 7:
+        init_pos = np.array(env_cfg.init_state.pos, dtype=np.double)
+        init_rot_xyzw = np.array(env_cfg.init_state.rot, dtype=np.double)
+        data.qpos[:3] = init_pos
+        data.qpos[3:7] = init_rot_xyzw[[3, 0, 1, 2]]
     data.qpos[-num_actuated_joints:] = cfg.robot_config.default_dof_pos
 
 
+    mujoco.mj_forward(model, data)
     mujoco.mj_step(model, data)
     viewer = mujoco_viewer.MujocoViewer(model, data)
     target_q = np.zeros((env_cfg.env.num_actions), dtype=np.double)
